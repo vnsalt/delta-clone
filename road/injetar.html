@@ -1,0 +1,99 @@
+<!-- camada Road: incluída no fim de cada página do template -->
+<style>
+  /* banner de cookies da Delta e redes que a Road não usa */
+  #CybotCookiebotDialog, #CybotCookiebotDialogBodyUnderlay, #CookiebotWidget { display: none !important; }
+  a[href*="facebook.com"], a[href*="youtube.com"], a[href*="linkedin.com"], a[href*="burocratik.com"],
+  a[href="/"][hreflang], a[href="/"]:not([href="/en"]) { display: none !important; }
+  /* logo: esconde o triângulo da Delta e mostra o logo da Road */
+  .road-logo-alvo > svg.logo, .road-logo-alvo > svg.logo-mono, .main-menu g.logo-shape { visibility: hidden !important; }
+  a.home-link.road-logo-alvo::after { width: 112px; height: 23px; }
+  .road-logo-alvo { position: relative; }
+  .road-logo-alvo::after {
+    content: ""; position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%);
+    width: 128px; height: 26px; background: #f6e9dc;
+    -webkit-mask: url(/road/logo.svg) center / contain no-repeat; mask: url(/road/logo.svg) center / contain no-repeat;
+  }
+</style>
+<script>
+(() => {
+  // destinos das páginas da Road no lugar das páginas da Delta
+  const ROTAS = {
+    '/en/products': '/en/servicos',
+    '/en/coffee-cycle': '/en/cases?c=identidade',
+    '/en/coffee-cycle/origins': '/en/servicos#conteudo-e-social',
+    '/en/coffee-cycle/roast': '/en/servicos#performance-e-midia',
+    '/en/coffee-cycle/blend': '/en/servicos#filmmaking-e-audiovisual',
+    '/en/coffee-cycle/tasting': '/en/servicos#web-e-produto',
+    '/en/barista-academy': '/en/cases?c=produto',
+    '/en/coffee-science-centre': '/en/cases?c=web',
+    '/en/the-azores-coffee': '/en/cases',
+    '/cafe-dos-acores': '/en/cases',
+    '/en/history': '/en/sobre',
+    '/en/about': '/en/sobre#time',
+    '/en/business-solutions': '/en/sobre#segmentos',
+    '/en/sustainability': '/en/sobre',
+    '/en/journal': '/en/blog',
+    '/en/quiz': '/en/sobre#diagnostico',
+    'https://dddelta.com/': '/en/cases',
+    'https://www.thedeltahouse.com': 'https://www.instagram.com/sejaroad/',
+    'https://www.instagram.com/delta_cafes/': 'https://www.instagram.com/sejaroad/',
+    'mailto:info@gruponabeiro.com': 'https://www.roadtodigital.com.br/',
+    'tel:808 20 06 44': 'https://www.roadtodigital.com.br/',
+    'tel:800 20 41 10': 'https://www.instagram.com/sejaroad/',
+    '/en/legal/privacy-policy': 'https://www.roadtodigital.com.br/',
+    '/en/legal/terms-and-conditions': 'https://www.roadtodigital.com.br/',
+    '/en/legal/cookie-policy': 'https://www.roadtodigital.com.br/',
+  };
+  // cada "produto" da faixa colorida abre um case
+  const PRODUTOS = { chavena: 'fc-dermatologia', portugal: 'polyblu', colombia: 'h-link', timor: 'rafael-pamplona', cuba: 'clilink', vietnam: 'fc-dermatologia', brazil: 'polyblu', angola: 'h-link', ethiopia: 'rafael-pamplona', bio: 'clilink' };
+  // rótulos fixos do código do template
+  const UI = {
+    'Menu': 'Menu', 'Close': 'Fechar', 'Scroll': 'Role', 'See more': 'Ver mais', 'Read more': 'Ler mais',
+    'Follow us': 'Siga a gente', 'Contacts': 'Contato', 'Legal': 'Legal', 'English': 'Português', 'Português': 'English',
+    'History of Delta': 'Conheça o time', '1986': '2026', 'Start of activity in Spain': '480+ projetos entregues',
+  };
+
+  function destino(href) {
+    if (!href) return null;
+    if (ROTAS[href]) return ROTAS[href];
+    if (href.startsWith('mailto:') || href.startsWith('tel:')) return 'https://www.roadtodigital.com.br/';
+    if (href.startsWith('/en/products/')) return '/en/cases/' + (PRODUTOS[href.split('/').pop()] || '');
+    if (href.startsWith('/en/journal/')) return '/en/blog';
+    if (href.startsWith('https://gruponabeiro.com') || href.startsWith('https://www.livroreclamacoes') || href.startsWith('https://whistleblower')) return '/en/sobre#segmentos';
+    return null;
+  }
+
+  function ajustar() {
+    document.querySelectorAll('a[href]').forEach((a) => {
+      const texto = a.textContent.trim();
+      const d = (texto.startsWith('Nossos serviços') && '/en/servicos') || (texto.startsWith('Conheça o time') && '/en/sobre#time') || destino(a.getAttribute('href'));
+      if (d && a.dataset.road !== d) { a.dataset.road = d; a.setAttribute('href', d); if (d.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; } }
+    });
+    // logo central: o link para /en que fica no centro do menu
+    document.querySelectorAll('svg.logo').forEach((s) => s.parentElement.classList.add('road-logo-alvo'));
+    document.querySelectorAll('.main-menu a.home-link').forEach((a) => a.classList.add('road-logo-alvo'));
+    // textos que vêm do código do template (não do conteúdo)
+    document.querySelectorAll('.intro .left-copy').forEach((e) => { if (e.textContent.trim() === 'The house') e.textContent = 'Feito'; });
+    document.querySelectorAll('.intro .right-copy').forEach((e) => {
+      const em = e.querySelector('em');
+      if (em && em.textContent.trim() === 'coffee') { em.textContent = 'permanecer'; if (e.firstChild.nodeType === 3) e.firstChild.textContent = 'para '; }
+    });
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n; (n = walker.nextNode());) { const t = n.textContent.trim(); if (UI[t] !== undefined) n.textContent = n.textContent.replace(t, UI[t]); }
+    if (document.title.includes('Delta') || document.title.includes('A Road —')) document.title = 'Road to Digital | Assessoria de marketing e tráfego pago';
+  }
+
+  // o roteador do Nuxt não conhece as páginas novas: força o carregamento completo
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    const d = destino(a.getAttribute('href')) || a.dataset.road;
+    if (!d) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (d.startsWith('http')) window.open(d, '_blank', 'noopener'); else location.href = d;
+  }, true);
+
+  new MutationObserver(() => { clearTimeout(window.__roadT); window.__roadT = setTimeout(ajustar, 60); }).observe(document.documentElement, { childList: true, subtree: true });
+  ajustar();
+})();
+</script>
