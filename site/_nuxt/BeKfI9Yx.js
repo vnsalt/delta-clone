@@ -1,0 +1,1 @@
+var s=Object.defineProperty;var r=(i,e)=>s(i,"name",{value:e,configurable:!0});import{cp as n}from"./BUfTxZIz.js";function y(){const e=n().isDesktop?.1:1;return{registerHydration:r((o,a,t=!1)=>{setTimeout(()=>{if(o.value=!0,t){const f=typeof t=="string"?` (${t})`:""}},a*e)},"registerHydration"),factor:e}}r(y,"useHydrateStaggered");export{y as u};
