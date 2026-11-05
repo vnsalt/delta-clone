@@ -4,7 +4,7 @@
 /* cortina café com o logo, cobre a tela durante a troca de página */
 .road-cortina {
   position: fixed; inset: 0; z-index: 2147483000; pointer-events: none;
-  background: #2c1a12; display: grid; place-items: center;
+  background: var(--cortina, #2c1a12); display: grid; place-items: center;
   transform: translateY(100%);
 }
 .road-cortina::after {

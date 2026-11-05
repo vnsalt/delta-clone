@@ -6,11 +6,13 @@
   const html = document.documentElement;
   const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const propria = !!document.querySelector('[data-road-pagina]');
-  const guardar = (v) => { try { v ? sessionStorage.setItem('road-trans', '1') : sessionStorage.removeItem('road-trans'); } catch {} };
+  const PADRAO = '#2c1a12';
+  const guardar = (v, cor) => { try { if (v) { sessionStorage.setItem('road-trans', '1'); sessionStorage.setItem('road-cor', cor || PADRAO); } else sessionStorage.removeItem('road-trans'); } catch {} };
 
-  // ---- cortina ----
+  // ---- cortina (na cor do case de destino, quando houver) ----
   const cortina = document.createElement('div');
   cortina.className = 'road-cortina';
+  try { cortina.style.background = sessionStorage.getItem('road-cor') || PADRAO; } catch { cortina.style.background = PADRAO; }
   cortina.setAttribute('aria-hidden', 'true');
   document.body.appendChild(cortina);
 
@@ -35,10 +37,12 @@
   }
 
   let indo = false;
-  window.roadIr = (url) => {
+  window.roadIr = (url, cor) => {
     if (indo) return;
     indo = true;
-    guardar(true);
+    cor = cor || PADRAO;
+    guardar(true, cor);
+    cortina.style.background = cor;
     if (window.__roadLenis) window.__roadLenis.stop();
     cortina.classList.remove('saindo');
     cortina.classList.add('cobrindo');
@@ -73,7 +77,7 @@
       const r = interno(a, e);
       if (!r) return;
       e.preventDefault();
-      if (r.url) return window.roadIr(r.url);
+      if (r.url) return window.roadIr(r.url, a.dataset.cor);
       if (r.hash) irPara(r.hash);
     });
   }

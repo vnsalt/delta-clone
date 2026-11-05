@@ -26,7 +26,7 @@ Abra http://localhost:4180/en
 
 - `road/textos.json`: textos trocados (por texto exato ou pela posição no `_payload.json`).
 - `road/imagens.json`: imagem/vídeo da Delta → arquivo da Road. O servidor recorta cada imagem no tamanho da original (cache em `road/.cache/`).
-- `road/cases.json` + `road/cases/`: os 12 cases de roadtodigital.com.br.
+- `road/cases.json` + `road/cases/`: os 12 cases de roadtodigital.com.br. Cada case tem um `tema` (fundo, texto, escuro, destaque, claro) tirado das cores da capa: a página inteira, o vidro do "Próximo case" e a cortina da transição usam essas cores.
 - `road/paginas.mjs`: páginas próprias: `/en/cases`, `/en/cases/<slug>` (os 12, completos), `/en/servicos`, `/en/sobre`, `/en/blog`, `/en/blog/<slug>`, `/en/contato`, `/en/privacidade`, `/en/termos`. Nenhum link leva ao site atual da Road.
 - `road/movimento.css` + `road/movimento.js`: cortina com o logo na troca de página (também a partir da home do template), rolagem suave (Lenis via jsDelivr), títulos e blocos que entram ao rolar; respeita "reduzir movimento" do sistema.
 - `road/importar-blog.mjs`: baixa os posts do blog de roadtodigital.com.br para `road/blog/` (imagens em `road/ext/`). Rode de novo para atualizar.

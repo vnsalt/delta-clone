@@ -15,8 +15,15 @@ export const SERVICOS = [
   ['Estruturação Comercial', 'Processo de vendas, treinamento de secretária, precificação e CRM, com consultores que são donos de clínica.'],
 ];
 
-function casca(titulo, descricao, corpo) {
-  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+// tema de um case: a página inteira (fundo, texto, botões, seções escuras, rodapé) nas cores do projeto
+function estiloTema(t) {
+  if (!t) return '';
+  const mix = (a, p, b) => `color-mix(in srgb,${a} ${p}%,${b})`;
+  return ` style="--creme:${t.fundo};--texto:${t.texto};--suave:${mix(t.texto, 64, t.fundo)};--linha:${mix(t.texto, 16, 'transparent')};--cafe:${t.escuro};--claro:${t.claro};--claro2:${mix(t.claro, 68, t.escuro)};--destaque:${t.destaque};--destaque2:${t.destaque};--cortina:${t.escuro}"`;
+}
+
+function casca(titulo, descricao, corpo, tema) {
+  return `<!doctype html><html lang="pt-BR"${estiloTema(tema)}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${tema ? `<meta name="theme-color" content="${tema.fundo}">` : ''}
 <title>${esc(titulo)}</title><meta name="description" content="${esc(descricao)}"><link rel="icon" href="/road/icon.svg">
 <script>document.documentElement.classList.add('road-js');try{if(sessionStorage.getItem('road-trans')==='1')document.documentElement.classList.add('road-chegando')}catch(e){}</script>
 <link rel="stylesheet" href="/road/movimento.css">
@@ -24,12 +31,12 @@ function casca(titulo, descricao, corpo) {
 @font-face{font-family:Season;src:url(/fonts/delta-season-vf.woff2) format("woff2");font-weight:100 900}
 @font-face{font-family:Gothic;src:url(/fonts/trade-gothic-condenced.woff2) format("woff2")}
 @font-face{font-family:GothicB;src:url(/fonts/trade-gothic-bold-condenced.woff2) format("woff2")}
-:root{--creme:#f6e9dc;--cafe:#2c1a12;--cafe2:#3a241a;--texto:#2c1a12;--suave:#7a6355;--linha:rgba(44,26,18,.15)}
+:root{--creme:#f6e9dc;--cafe:#2c1a12;--texto:#2c1a12;--suave:#7a6355;--linha:rgba(44,26,18,.15);--claro:#f6e9dc;--claro2:#c9ad97;--destaque:var(--cafe);--destaque2:#5a3a2b}
 *{box-sizing:border-box;margin:0}
 html.road-chegando body{overflow:hidden}
 body{font-family:Season,Georgia,serif;background:var(--creme);color:var(--texto);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:28px;padding:10px 26px;border-radius:999px;background:rgba(44,26,18,.82);backdrop-filter:blur(12px);color:#f6e9dc;font-family:GothicB,sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:28px;padding:10px 26px;border-radius:999px;background:color-mix(in srgb,var(--cafe) 82%,transparent);backdrop-filter:blur(12px);color:var(--claro);font-family:GothicB,sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .nav img{height:22px;filter:brightness(0) invert(.93)}
 .nav a:hover{opacity:.7}
 .wrap{max-width:1320px;margin:0 auto;padding:0 32px}
@@ -40,12 +47,12 @@ h1{font-weight:300;font-size:clamp(44px,7vw,104px);line-height:.98;letter-spacin
 .intro{max-width:620px;font-size:19px;line-height:1.45;margin-top:22px;color:var(--suave)}
 .pilula{display:inline-flex;align-items:center;gap:6px;margin-top:28px}
 .pilula span{background:var(--creme);border:1px solid var(--linha);padding:12px 22px;border-radius:999px;font-size:15px}
-.pilula i{width:44px;height:44px;border-radius:50%;background:var(--cafe);color:var(--creme);display:grid;place-items:center;font-style:normal}
-.escuro .pilula span{background:#f6e9dc;color:var(--cafe)}
-.escuro .pilula i{background:#5a3a2b}
+.pilula i{width:44px;height:44px;border-radius:50%;background:var(--destaque);color:var(--claro);display:grid;place-items:center;font-style:normal}
+.escuro .pilula span{background:var(--claro);color:var(--cafe);border-color:transparent}
+.escuro .pilula i{background:var(--destaque2)}
 .filtros{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 34px}
 .filtros button{font:inherit;font-size:15px;border:1px solid var(--linha);background:transparent;padding:10px 18px;border-radius:999px;cursor:pointer;color:inherit}
-.filtros button[aria-pressed=true]{background:var(--cafe);color:var(--creme);border-color:var(--cafe)}
+.filtros button[aria-pressed=true]{background:var(--cafe);color:var(--claro);border-color:var(--cafe)}
 .grade{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-bottom:110px}
 .card{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:#ddd}
 .card img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
@@ -53,8 +60,8 @@ h1{font-weight:300;font-size:clamp(44px,7vw,104px);line-height:.98;letter-spacin
 .card .rot{position:absolute;inset:auto 0 0 0;padding:18px 20px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.6))}
 .card .rot small{font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:11px;opacity:.85}
 .card .rot b{display:block;font-weight:400;font-size:24px;margin-top:2px}
-.escuro{background:var(--cafe);color:var(--creme)}
-.escuro .olho,.escuro .intro{color:#c9ad97}
+.escuro{background:var(--cafe);color:var(--claro)}
+.escuro .olho,.escuro .intro{color:var(--claro2)}
 .capa{width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:16px;display:block}
 .ficha{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid var(--linha);border-bottom:1px solid var(--linha);padding:24px 0;margin:40px 0}
 .ficha div small{display:block;font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--suave);margin-bottom:6px}
@@ -69,12 +76,12 @@ h1{font-weight:300;font-size:clamp(44px,7vw,104px);line-height:.98;letter-spacin
 .servico p{font-size:17px;line-height:1.5;color:var(--suave)}
 footer{padding:80px 0 40px}
 footer .grande{font-size:clamp(40px,6vw,96px)}
-footer p{max-width:520px;margin-top:20px;color:#c9ad97;line-height:1.5}
+footer p{max-width:520px;margin-top:20px;color:var(--claro2);line-height:1.5}
 footer .colunas{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:64px}
-footer .colunas small{display:block;font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:#c9ad97;margin-bottom:12px}
+footer .colunas small{display:block;font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--claro2);margin-bottom:12px}
 footer .colunas a{display:block;padding:4px 0;font-size:16px}footer .colunas a:hover{opacity:.7}
 @media (max-width:900px){footer .colunas{grid-template-columns:1fr 1fr}}
-footer .base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:70px;padding-top:20px;border-top:1px solid rgba(246,233,220,.2);font-family:GothicB,sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#c9ad97}
+footer .base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:70px;padding-top:20px;border-top:1px solid color-mix(in srgb,var(--claro) 20%,transparent);font-family:GothicB,sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--claro2)}
 @media (max-width:900px){.grade{grid-template-columns:1fr 1fr}.servico{grid-template-columns:1fr}.ficha{grid-template-columns:1fr}}
 @media (max-width:600px){.wrap{padding:0 16px}.grade,.galeria{grid-template-columns:1fr}.nav{gap:14px;padding:10px 16px;font-size:11px}.nav .esconde{display:none}}
 </style></head><body data-road-pagina>
@@ -96,7 +103,7 @@ ${corpo}
 }
 
 export function paginaCases({ cases }) {
-  const cards = cases.map((c) => `<a class="card" href="/en/cases/${c.slug}" data-cat="${esc(c.categoria)}"><img src="${img(c.imagens[0])}" alt="${esc(c.nome)}" loading="lazy"><div class="rot"><small>${esc(c.categoria)} · ${c.ano}</small><b>${esc(c.nome)}</b></div></a>`).join('');
+  const cards = cases.map((c) => `<a class="card" href="/en/cases/${c.slug}" data-cat="${esc(c.categoria)}" data-cor="${c.tema?.escuro || ''}"><img src="${img(c.imagens[0])}" alt="${esc(c.nome)}" loading="lazy"><div class="rot"><small>${esc(c.categoria)} · ${c.ano}</small><b>${esc(c.nome)}</b></div></a>`).join('');
   const filtros = ['Todos', ...CATEGORIAS].map((f, i) => `<button type="button" aria-pressed="${i === 0}" data-f="${esc(f)}">${esc(f)}</button>`).join('');
   return casca('Cases | Road to Digital', 'Cases de identidade visual, sites e produto da Road to Digital.', `
 <main class="wrap"><section class="topo"><div class="olho">R de Road · ${cases.length} projetos</div>
@@ -143,26 +150,33 @@ export function paginaCase({ cases }, c) {
 .nums-case b{display:block;font-family:GothicB,sans-serif;font-weight:400;font-size:clamp(40px,4.5vw,64px);line-height:1}
 .nums-case small{font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--suave)}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}.tags span{border:1px solid var(--linha);border-radius:999px;padding:7px 14px;font-family:GothicB,sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.universo{padding:110px 0 70px;text-align:center}.universo .grande{max-width:15ch;margin:16px auto 0;font-size:clamp(44px,7vw,112px)}
+.universo{padding:110px 0 70px;text-align:center}.universo .grande{color:color-mix(in srgb,var(--destaque) 72%,var(--texto))}.tags span{border-color:color-mix(in srgb,var(--destaque) 45%,transparent)}.universo .grande{max-width:15ch;margin:16px auto 0;font-size:clamp(44px,7vw,112px)}
 .projeto{display:grid;grid-template-columns:1fr 1.3fr;gap:60px;padding:0 0 90px}
 .projeto p{font-size:clamp(19px,1.7vw,24px);line-height:1.45}
 .projeto ol{list-style:none;padding:0;margin-top:30px;border-top:1px solid var(--linha)}
 .projeto li{display:flex;gap:18px;padding:14px 0;border-bottom:1px solid var(--linha);font-size:18px}.projeto li span{font-family:GothicB,sans-serif;color:var(--suave)}
 .servico-link{margin-top:26px;color:var(--suave)}.servico-link a{color:var(--texto);border-bottom:1px solid currentColor}
 .galeria img.larga{grid-column:1/-1;aspect-ratio:16/8}.galeria img:first-child{grid-column:auto;aspect-ratio:4/3}.galeria img.larga:first-child{grid-column:1/-1;aspect-ratio:16/8}
-.no-ar{display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:40px;background:var(--cafe);color:var(--creme);border-radius:18px;overflow:hidden;margin-bottom:100px}
+.no-ar{display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:40px;background:var(--cafe);color:var(--claro);border-radius:18px;overflow:hidden;margin-bottom:100px}
 .no-ar img{width:100%;height:100%;aspect-ratio:16/10;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.7,.2,1)}.no-ar:hover img{transform:scale(1.03)}
-.no-ar span{padding:36px}.no-ar small{display:block;font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:#c9ad97}
+.no-ar span{padding:36px}.no-ar small{display:block;font-family:GothicB,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--claro2)}
 .no-ar b{display:block;font-weight:300;font-size:clamp(26px,3vw,44px);margin:10px 0 18px;word-break:break-word}.no-ar em{font-style:normal;font-family:GothicB,sans-serif;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
 .redes{padding:0 0 100px}.redes h2.t{font-weight:300;font-size:clamp(36px,4.5vw,64px);margin:12px 0 0}
 .feed{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}.feed img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px;display:block}
-.prox{text-align:left}.prox-grade{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:center}
+.prox{text-align:left;position:relative;overflow:hidden;isolation:isolate;padding:110px 0}
+.prox-fundo{position:absolute;inset:-15%;width:130%;height:130%;object-fit:cover;z-index:-2;filter:blur(70px) saturate(1.5);transform:scale(1.1)}
+.prox::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,color-mix(in srgb,var(--prox-escuro,#120a06) 40%,transparent),color-mix(in srgb,var(--prox-escuro,#120a06) 62%,transparent))}
+.prox-vidro{padding:44px;border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.22);
+  -webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);box-shadow:0 30px 80px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.25)}
+.prox{color:var(--prox-claro,var(--claro))}.prox .olho,.prox .intro{color:color-mix(in srgb,var(--prox-claro,var(--claro)) 82%,transparent)}.prox .pilula span{background:var(--prox-claro,var(--claro));color:var(--prox-escuro,var(--cafe))}
+.prox-grade{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:center}
 .prox .grande{font-size:clamp(56px,8vw,128px)}.prox .intro{margin-top:14px}
-.prox-preview{position:relative;display:block;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:#3a241a}
+.prox-preview{position:relative;display:block;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:var(--prox-escuro,#3a241a)}
 .prox-preview img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s var(--entra,ease-out)}
 .prox-preview:hover img{transform:scale(1.04)}
 .prox-tags{position:absolute;left:18px;bottom:18px;display:flex;gap:6px;flex-wrap:wrap}
 .prox-tags span{background:rgba(246,233,220,.92);color:var(--cafe);border-radius:999px;padding:6px 12px;font-family:GothicB,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+@media (max-width:600px){.prox{padding:70px 0}.prox-vidro{padding:22px;border-radius:20px}}
 @media (max-width:900px){.projeto,.no-ar,.prox-grade{grid-template-columns:1fr;gap:28px}.feed{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.nums-case{grid-template-columns:1fr}.nums-case div+div{border-left:0;border-top:1px solid var(--linha);padding-left:0}.feed{grid-template-columns:1fr}}
 </style>
@@ -180,15 +194,15 @@ ${galeria ? `<div class="galeria">${galeria}</div>` : ''}
 ${site}
 ${redes}
 </main>
-<section class="escuro prox"><div class="wrap prox-grade">
+<section class="escuro prox" style="--prox-escuro:${prox.tema?.escuro || '#2c1a12'};--prox-claro:${prox.tema?.claro || '#f6e9dc'};--destaque2:${prox.tema?.destaque || '#5a3a2b'}"><img class="prox-fundo" src="${img(prox.imagens[0])}" alt="" aria-hidden="true"><div class="wrap"><div class="prox-grade prox-vidro">
 <div class="prox-texto"><div class="olho">Próximo case · ${esc(prox.categoria)} · ${prox.ano}</div>
-<a href="/en/cases/${prox.slug}"><div class="grande" style="margin-top:12px">${esc(prox.nome)}</div></a>
+<a href="/en/cases/${prox.slug}" data-cor="${prox.tema?.escuro || ''}"><div class="grande" style="margin-top:12px">${esc(prox.nome)}</div></a>
 <p class="intro">${esc(prox.chamada)}</p>
-<a class="pilula" href="/en/cases/${prox.slug}"><span>Ver case</span><i>→</i></a></div>
-<a class="prox-preview" href="/en/cases/${prox.slug}" aria-label="Ver o case ${esc(prox.nome)}">
+<a class="pilula" href="/en/cases/${prox.slug}" data-cor="${prox.tema?.escuro || ''}"><span>Ver case</span><i>→</i></a></div>
+<a class="prox-preview" href="/en/cases/${prox.slug}" data-cor="${prox.tema?.escuro || ''}" aria-label="Ver o case ${esc(prox.nome)}">
 <img src="${img(prox.imagens[0])}" alt="${esc(prox.nome)}" loading="lazy">
 <span class="prox-tags">${prox.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</span></a>
-</div></section>`);
+</div></div></section>`, c.tema);
 }
 
 const ancora = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -218,7 +232,7 @@ export function paginaSobre() {
 .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:16px;overflow:hidden;margin:10px 0 100px}
 .num{background:var(--creme);padding:34px 28px}.num b{display:block;font-family:GothicB,sans-serif;font-weight:400;font-size:clamp(44px,5vw,72px);line-height:1}.num span{color:var(--suave);font-size:16px}
 .citas{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:90px 0}
-.citas blockquote{font-size:clamp(24px,2.6vw,36px);font-weight:300;line-height:1.2}.citas cite{display:block;margin-top:18px;font-style:normal;font-family:GothicB,sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#c9ad97}
+.citas blockquote{font-size:clamp(24px,2.6vw,36px);font-weight:300;line-height:1.2}.citas cite{display:block;margin-top:18px;font-style:normal;font-family:GothicB,sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--claro2)}
 details{border-bottom:1px solid var(--linha);padding:24px 0}details:first-child{border-top:1px solid var(--linha)}
 summary{cursor:pointer;font-size:clamp(20px,2vw,26px);list-style:none;display:flex;justify-content:space-between;gap:20px}summary::after{content:"+";font-family:GothicB,sans-serif}details[open] summary::after{content:"–"}
 details p{margin-top:14px;max-width:760px;font-size:17px;line-height:1.55;color:var(--suave)}
