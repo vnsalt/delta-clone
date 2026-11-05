@@ -37,15 +37,18 @@
     'https://dddelta.com/': '/en/cases',
     'https://www.thedeltahouse.com': 'https://www.instagram.com/sejaroad/',
     'https://www.instagram.com/delta_cafes/': 'https://www.instagram.com/sejaroad/',
-    'mailto:info@gruponabeiro.com': 'https://www.roadtodigital.com.br/',
-    'tel:808 20 06 44': 'https://www.roadtodigital.com.br/',
+    'mailto:info@gruponabeiro.com': '/en/contato',
+    'tel:808 20 06 44': '/en/contato',
     'tel:800 20 41 10': 'https://www.instagram.com/sejaroad/',
-    '/en/legal/privacy-policy': 'https://www.roadtodigital.com.br/',
-    '/en/legal/terms-and-conditions': 'https://www.roadtodigital.com.br/',
-    '/en/legal/cookie-policy': 'https://www.roadtodigital.com.br/',
+    '/en/legal/privacy-policy': '/en/privacidade',
+    '/en/legal/terms-and-conditions': '/en/termos',
+    '/en/legal/cookie-policy': '/en/privacidade',
+    '/en/legal/recruitment': '/en/sobre#segmentos',
   };
   // cada "produto" da faixa colorida abre um case
   const PRODUTOS = { chavena: 'fc-dermatologia', portugal: 'polyblu', colombia: 'h-link', timor: 'rafael-pamplona', cuba: 'clilink', vietnam: 'fc-dermatologia', brazil: 'polyblu', angola: 'h-link', ethiopia: 'rafael-pamplona', bio: 'clilink' };
+  // cards de blog da home → post correspondente
+  const POSTS = [['Landing page para clínica', 'landing-page-para-clinica-odontologica'], ['Marketing digital para indústrias', 'marketing-digital-para-industria'], ['Publicidade médica', 'publicidade-medica-cfm-o-que-pode'], ['dentista pode postar', 'publicidade-odontologica-cfo-o-que-pode']];
   // rótulos fixos do código do template
   const UI = {
     'Menu': 'Menu', 'Close': 'Fechar', 'Scroll': 'Role', 'See more': 'Ver mais', 'Read more': 'Ler mais',
@@ -56,7 +59,8 @@
   function destino(href) {
     if (!href) return null;
     if (ROTAS[href]) return ROTAS[href];
-    if (href.startsWith('mailto:') || href.startsWith('tel:')) return 'https://www.roadtodigital.com.br/';
+    if (href.startsWith('mailto:') || href.startsWith('tel:')) return '/en/contato';
+    if (href.includes('roadtodigital.com.br')) return '/en/contato';
     if (href.startsWith('/en/products/')) return '/en/cases/' + (PRODUTOS[href.split('/').pop()] || '');
     if (href.startsWith('/en/journal/')) return '/en/blog';
     if (href.startsWith('https://gruponabeiro.com') || href.startsWith('https://www.livroreclamacoes') || href.startsWith('https://whistleblower')) return '/en/sobre#segmentos';
@@ -66,7 +70,8 @@
   function ajustar() {
     document.querySelectorAll('a[href]').forEach((a) => {
       const texto = a.textContent.trim();
-      const d = (texto.startsWith('Nossos serviços') && '/en/servicos') || (texto.startsWith('Conheça o time') && '/en/sobre#time') || destino(a.getAttribute('href'));
+      const post = POSTS.find(([t]) => texto.includes(t));
+      const d = (post && '/en/blog/' + post[1]) || (texto.startsWith('Nossos serviços') && '/en/servicos') || (texto.startsWith('Fale com a gente') && '/en/contato') || (texto.startsWith('Conheça o time') && '/en/sobre#time') || destino(a.getAttribute('href'));
       if (d && a.dataset.road !== d) { a.dataset.road = d; a.setAttribute('href', d); if (d.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; } }
     });
     // logo central: o link para /en que fica no centro do menu
@@ -87,7 +92,7 @@
   document.addEventListener('click', (e) => {
     const a = e.target.closest && e.target.closest('a[href]');
     if (!a) return;
-    const d = destino(a.getAttribute('href')) || a.dataset.road;
+    const d = a.dataset.road || destino(a.getAttribute('href'));
     if (!d) return;
     e.preventDefault(); e.stopImmediatePropagation();
     if (d.startsWith('http')) window.open(d, '_blank', 'noopener'); else location.href = d;

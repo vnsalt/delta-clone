@@ -27,7 +27,8 @@ Abra http://localhost:4180/en
 - `road/textos.json`: textos trocados (por texto exato ou pela posição no `_payload.json`).
 - `road/imagens.json`: imagem/vídeo da Delta → arquivo da Road. O servidor recorta cada imagem no tamanho da original (cache em `road/.cache/`).
 - `road/cases.json` + `road/cases/`: os 12 cases de roadtodigital.com.br.
-- `road/paginas.mjs`: páginas próprias: `/en/cases`, `/en/cases/<slug>`, `/en/servicos`, `/en/sobre`, `/en/blog`.
+- `road/paginas.mjs`: páginas próprias: `/en/cases`, `/en/cases/<slug>` (os 12, completos), `/en/servicos`, `/en/sobre`, `/en/blog`, `/en/blog/<slug>`, `/en/contato`, `/en/privacidade`, `/en/termos`. Nenhum link leva ao site atual da Road.
+- `road/importar-blog.mjs`: baixa os posts do blog de roadtodigital.com.br para `road/blog/` (imagens em `road/ext/`). Rode de novo para atualizar.
 - `road/injetar.html`: logo da Road, links do menu para as páginas novas, rótulos fixos do template.
 - `road/gerar-videos.ps1`: gera os vídeos de fundo a partir das imagens dos cases.
 - As páginas internas da Delta (products, history, about...) redirecionam para as equivalentes da Road.

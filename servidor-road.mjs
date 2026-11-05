@@ -9,7 +9,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
-import { paginaCases, paginaCase, paginaServicos, paginaSobre, paginaBlog } from './road/paginas.mjs';
+import { paginaCases, paginaCase, paginaServicos, paginaSobre, paginaBlog, paginaPost, paginaContato, paginaLegal } from './road/paginas.mjs';
 
 const RAIZ = path.resolve('site');
 const ROAD = path.resolve('road');
@@ -144,7 +144,18 @@ http.createServer(async (req, res) => {
     if (m) { const caso = c.cases.find((x) => x.slug === m[1]); if (caso) return enviar(res, 200, 'text/html; charset=utf-8', paginaCase(c, caso)); }
     if (/^\/en\/servicos\/?$/.test(p)) return enviar(res, 200, 'text/html; charset=utf-8', paginaServicos(c));
     if (/^\/en\/sobre\/?$/.test(p)) return enviar(res, 200, 'text/html; charset=utf-8', paginaSobre(c));
-    if (/^\/en\/blog\/?$/.test(p)) return enviar(res, 200, 'text/html; charset=utf-8', paginaBlog(c));
+    const html = (corpo) => enviar(res, 200, 'text/html; charset=utf-8', corpo);
+    const posts = () => JSON.parse(fs.readFileSync(path.join(ROAD, 'blog', 'indice.json'), 'utf8'));
+    if (/^\/en\/blog\/?$/.test(p)) return html(paginaBlog(c, posts(), u.searchParams.get('c')));
+    const mb = p.match(/^\/en\/blog\/categoria\/([a-z0-9-]+)\/?$/);
+    if (mb) { res.writeHead(302, { Location: '/en/blog?c=' + mb[1] }); return res.end(); }
+    const mp = p.match(/^\/en\/blog\/([a-z0-9-]+)\/?$/);
+    if (mp) {
+      const arq = path.join(ROAD, 'blog', mp[1] + '.json');
+      if (fs.existsSync(arq)) return html(paginaPost(c, JSON.parse(fs.readFileSync(arq, 'utf8')), posts()));
+    }
+    if (/^\/en\/contato\/?$/.test(p)) return html(paginaContato(c));
+    if (/^\/en\/(privacidade|termos)\/?$/.test(p)) return html(paginaLegal(c, p.includes('privacidade') ? 'privacidade' : 'termos'));
 
     // páginas da Delta que não fazem parte do site da Road: abrem a página equivalente
     const REDIRECIONA = { '/en/products': '/en/servicos', '/en/history': '/en/sobre', '/en/about': '/en/sobre#time', '/en/business-solutions': '/en/sobre#segmentos', '/en/sustainability': '/en/sobre', '/en/journal': '/en/blog', '/en/quiz': '/en/sobre#diagnostico', '/en/the-azores-coffee': '/en/cases', '/en/coffee-cycle': '/en/cases', '/en/barista-academy': '/en/cases', '/en/coffee-science-centre': '/en/cases', '/cafe-dos-acores': '/en/cases' };
