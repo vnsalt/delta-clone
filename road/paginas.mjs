@@ -156,7 +156,14 @@ export function paginaCase({ cases }, c) {
 .no-ar b{display:block;font-weight:300;font-size:clamp(26px,3vw,44px);margin:10px 0 18px;word-break:break-word}.no-ar em{font-style:normal;font-family:GothicB,sans-serif;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
 .redes{padding:0 0 100px}.redes h2.t{font-weight:300;font-size:clamp(36px,4.5vw,64px);margin:12px 0 0}
 .feed{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}.feed img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px;display:block}
-@media (max-width:900px){.projeto,.no-ar{grid-template-columns:1fr;gap:28px}.feed{grid-template-columns:1fr 1fr}}
+.prox{text-align:left}.prox-grade{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:center}
+.prox .grande{font-size:clamp(56px,8vw,128px)}.prox .intro{margin-top:14px}
+.prox-preview{position:relative;display:block;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:#3a241a}
+.prox-preview img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s var(--entra,ease-out)}
+.prox-preview:hover img{transform:scale(1.04)}
+.prox-tags{position:absolute;left:18px;bottom:18px;display:flex;gap:6px;flex-wrap:wrap}
+.prox-tags span{background:rgba(246,233,220,.92);color:var(--cafe);border-radius:999px;padding:6px 12px;font-family:GothicB,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+@media (max-width:900px){.projeto,.no-ar,.prox-grade{grid-template-columns:1fr;gap:28px}.feed{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.nums-case{grid-template-columns:1fr}.nums-case div+div{border-left:0;border-top:1px solid var(--linha);padding-left:0}.feed{grid-template-columns:1fr}}
 </style>
 <main class="wrap"><section class="topo"><a class="olho" href="/en/cases">← Todos os cases</a>
@@ -173,9 +180,15 @@ ${galeria ? `<div class="galeria">${galeria}</div>` : ''}
 ${site}
 ${redes}
 </main>
-<section class="escuro prox"><div class="wrap"><div class="olho">Próximo case · ${esc(prox.categoria)}</div>
+<section class="escuro prox"><div class="wrap prox-grade">
+<div class="prox-texto"><div class="olho">Próximo case · ${esc(prox.categoria)} · ${prox.ano}</div>
 <a href="/en/cases/${prox.slug}"><div class="grande" style="margin-top:12px">${esc(prox.nome)}</div></a>
-<a class="pilula" href="/en/cases/${prox.slug}"><span>Ver case</span><i>→</i></a></div></section>`);
+<p class="intro">${esc(prox.chamada)}</p>
+<a class="pilula" href="/en/cases/${prox.slug}"><span>Ver case</span><i>→</i></a></div>
+<a class="prox-preview" href="/en/cases/${prox.slug}" aria-label="Ver o case ${esc(prox.nome)}">
+<img src="${img(prox.imagens[0])}" alt="${esc(prox.nome)}" loading="lazy">
+<span class="prox-tags">${prox.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</span></a>
+</div></section>`);
 }
 
 const ancora = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

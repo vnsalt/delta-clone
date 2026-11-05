@@ -104,7 +104,7 @@
   // ---- blocos que entram ao rolar (só nas páginas próprias) ----
   if (!propria) return;
   const SEL = ['.topo > *:not(h1)', '.capa', '.capa-post', '.nums-case > div', '.universo .olho', '.projeto > div', '.galeria img', '.no-ar', '.redes > *:not(.feed)', '.feed img',
-    '.filtros', '.card', '.post-card', '.servico', '.num', '.citas blockquote', '.bloco > .olho', 'details', '.contato > *', '.legal > *', '.artigo > *', 'footer .pilula', 'footer p', 'footer .colunas > div', '.prox .olho', '.prox .pilula'].join(',');
+    '.filtros', '.card', '.post-card', '.servico', '.num', '.citas blockquote', '.bloco > .olho', 'details', '.contato > *', '.legal > *', '.artigo > *', 'footer .pilula', 'footer p', 'footer .colunas > div', '.prox .olho', '.prox .intro', '.prox .pilula', '.prox-preview'].join(',');
   const titulos = document.querySelectorAll('h1, .grande, h2.t');
   titulos.forEach((el) => {
     const partes = el.innerHTML.split(/<br\s*\/?>/i);
@@ -112,7 +112,7 @@
     el.classList.add('road-titulo');
   });
   const itens = [...document.querySelectorAll(SEL)].filter((el) => !el.closest('.road-titulo'));
-  itens.forEach((el) => { el.classList.add('rv'); if (el.tagName === 'IMG' || el.classList.contains('card') || el.classList.contains('no-ar')) el.classList.add('rv-img'); });
+  itens.forEach((el) => { el.classList.add('rv'); if (el.tagName === 'IMG' || el.classList.contains('card') || el.classList.contains('no-ar') || el.classList.contains('prox-preview')) el.classList.add('rv-img'); });
 
   const io = new IntersectionObserver((entradas) => {
     // escalona só o que entra junto, no máximo 240ms
