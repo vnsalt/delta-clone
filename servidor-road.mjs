@@ -97,7 +97,9 @@ function trocarHtml(texto, c) {
   texto = texto.replace('<html lang="en"', '<html lang="pt-BR"');
   // cookies e analytics da Delta não vão para o site da Road
   texto = texto.replace(/<script[^>]*(cookiebot|hotjar|googletagmanager|gtag)[^>]*>[\s\S]*?<\/script>/gi, '');
-  return texto.replace('</body>', c.injetar + '</body>');
+  // chegada por transição: a cortina já cobre a página desde o primeiro quadro
+  const cabeca = `<style>html.road-chegando body::before{content:"";position:fixed;inset:0;z-index:2147482999;background:#2c1a12}</style><script>try{if(sessionStorage.getItem('road-trans')==='1')document.documentElement.classList.add('road-chegando')}catch(e){}</script>`;
+  return texto.replace('<head>', '<head>' + cabeca).replace('</body>', c.injetar + '</body>');
 }
 
 function reescreverHosts(t) {

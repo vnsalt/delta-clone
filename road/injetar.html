@@ -1,4 +1,6 @@
 <!-- camada Road: incluída no fim de cada página do template -->
+<link rel="stylesheet" href="/road/movimento.css">
+<script src="/road/movimento.js"></script>
 <style>
   /* banner de cookies da Delta e redes que a Road não usa */
   #CybotCookiebotDialog, #CybotCookiebotDialogBodyUnderlay, #CookiebotWidget { display: none !important; }
@@ -95,7 +97,7 @@
     const d = a.dataset.road || destino(a.getAttribute('href'));
     if (!d) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    if (d.startsWith('http')) window.open(d, '_blank', 'noopener'); else location.href = d;
+    if (d.startsWith('http')) window.open(d, '_blank', 'noopener'); else if (window.roadIr) window.roadIr(d); else location.href = d;
   }, true);
 
   new MutationObserver(() => { clearTimeout(window.__roadT); window.__roadT = setTimeout(ajustar, 60); }).observe(document.documentElement, { childList: true, subtree: true });

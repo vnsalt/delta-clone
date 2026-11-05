@@ -18,12 +18,15 @@ export const SERVICOS = [
 function casca(titulo, descricao, corpo) {
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(titulo)}</title><meta name="description" content="${esc(descricao)}"><link rel="icon" href="/road/icon.svg">
+<script>document.documentElement.classList.add('road-js');try{if(sessionStorage.getItem('road-trans')==='1')document.documentElement.classList.add('road-chegando')}catch(e){}</script>
+<link rel="stylesheet" href="/road/movimento.css">
 <style>
 @font-face{font-family:Season;src:url(/fonts/delta-season-vf.woff2) format("woff2");font-weight:100 900}
 @font-face{font-family:Gothic;src:url(/fonts/trade-gothic-condenced.woff2) format("woff2")}
 @font-face{font-family:GothicB;src:url(/fonts/trade-gothic-bold-condenced.woff2) format("woff2")}
 :root{--creme:#f6e9dc;--cafe:#2c1a12;--cafe2:#3a241a;--texto:#2c1a12;--suave:#7a6355;--linha:rgba(44,26,18,.15)}
 *{box-sizing:border-box;margin:0}
+html.road-chegando body{overflow:hidden}
 body{font-family:Season,Georgia,serif;background:var(--creme);color:var(--texto);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 .nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:28px;padding:10px 26px;border-radius:999px;background:rgba(44,26,18,.82);backdrop-filter:blur(12px);color:#f6e9dc;font-family:GothicB,sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
@@ -74,7 +77,7 @@ footer .colunas a{display:block;padding:4px 0;font-size:16px}footer .colunas a:h
 footer .base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:70px;padding-top:20px;border-top:1px solid rgba(246,233,220,.2);font-family:GothicB,sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#c9ad97}
 @media (max-width:900px){.grade{grid-template-columns:1fr 1fr}.servico{grid-template-columns:1fr}.ficha{grid-template-columns:1fr}}
 @media (max-width:600px){.wrap{padding:0 16px}.grade,.galeria{grid-template-columns:1fr}.nav{gap:14px;padding:10px 16px;font-size:11px}.nav .esconde{display:none}}
-</style></head><body>
+</style></head><body data-road-pagina>
 <nav class="nav"><a href="/en" class="esconde">Início</a><a href="/en/servicos">Serviços</a><a href="/en/cases">Cases</a><a href="/en" aria-label="Road to Digital"><img src="/road/logo.svg" alt="Road to Digital"></a><a href="/en/sobre" class="esconde">Sobre</a><a href="/en/blog" class="esconde">Blog</a><a href="/en/contato">Contato</a></nav>
 ${corpo}
 <footer class="escuro"><div class="wrap">
@@ -88,7 +91,8 @@ ${corpo}
 <div><small>Atendimento</small><a href="/en/contato">Fale com a gente</a><a href="/en/privacidade">Privacidade</a><a href="/en/termos">Termos de uso</a><a href="https://www.instagram.com/sejaroad/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/sejaroad" target="_blank" rel="noopener">Behance</a></div>
 </div>
 <div class="base"><span>© 2026 RD360. Todos os direitos reservados.</span><span>Parceiro oficial Google · Meta · TikTok</span></div>
-</div></footer></body></html>`;
+</div></footer>
+<script src="/road/movimento.js"></script></body></html>`;
 }
 
 export function paginaCases({ cases }) {
@@ -103,7 +107,9 @@ export function paginaCases({ cases }) {
 <script>
 const botoes=document.querySelectorAll('.filtros button');
 const filtrar=f=>{botoes.forEach(x=>x.setAttribute('aria-pressed',x.dataset.f===f));
-  document.querySelectorAll('.card').forEach(c=>c.style.display=(f==='Todos'||c.dataset.cat===f)?'':'none');};
+  const vis=[];document.querySelectorAll('.card').forEach(c=>{const v=f==='Todos'||c.dataset.cat===f;c.style.display=v?'':'none';if(v)vis.push(c);});
+  if(window.roadRefiltrar&&f!==atual)window.roadRefiltrar(vis);atual=f;};
+let atual='Todos';
 botoes.forEach(b=>b.onclick=()=>filtrar(b.dataset.f));
 const atalho={identidade:'Identidade Visual',web:'Websites & Landing pages',produto:'Desenvolvimento de Produto'}[new URLSearchParams(location.search).get('c')];
 if(atalho)filtrar(atalho);
@@ -243,7 +249,9 @@ export function paginaBlog(_c, posts, filtro) {
 <div class="posts">${posts.map(cardPost).join('')}</div></main>
 <script>
 const bs=document.querySelectorAll('.filtros button');
-const f=s=>{bs.forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===s));document.querySelectorAll('.post-card').forEach(c=>c.style.display=(!s||c.dataset.cat===s)?'':'none');history.replaceState(null,'',s?'?c='+s:location.pathname);};
+let atual=null;
+const f=s=>{bs.forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===s));const vis=[];document.querySelectorAll('.post-card').forEach(c=>{const v=!s||c.dataset.cat===s;c.style.display=v?'':'none';if(v)vis.push(c);});history.replaceState(null,'',s?'?c='+s:location.pathname);
+  if(atual!==null&&atual!==s&&window.roadRefiltrar)window.roadRefiltrar(vis);atual=s;};
 bs.forEach(b=>b.onclick=()=>f(b.dataset.f));f(${JSON.stringify(filtro || '')});
 </script>`);
 }
